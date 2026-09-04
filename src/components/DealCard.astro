@@ -1,0 +1,31 @@
+---
+interface Props {
+  deal: {
+    id: string;
+    name: string;
+    image?: string;
+    price?: string;
+    priceOld?: string;
+    /** Already resolved by the export script: /go/<code> or a raw network URL. */
+    href: string;
+  };
+}
+const { deal } = Astro.props;
+---
+<div class="deal">
+  {deal.image
+    ? <img src={deal.image} alt={deal.name} width="108" height="108" loading="lazy" decoding="async" />
+    : <div style="width:108px;height:108px;background:#f2f0eb;border-radius:6px"></div>}
+  <div>
+    <p class="deal-name">{deal.name}</p>
+    {deal.price && (
+      <p class="price">
+        {deal.price}
+        {deal.priceOld && <s>{deal.priceOld}</s>}
+      </p>
+    )}
+    <a class="btn" href={deal.href} rel="sponsored nofollow noopener" target="_blank">
+      See it at Walmart
+    </a>
+  </div>
+</div>

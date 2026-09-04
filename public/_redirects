@@ -1,0 +1,3 @@
+# Affiliate click-out. Reuses the dealshop-worker on Cloudflare D1, so every
+# click on the site lands in the same clicks table as the Facebook links.
+/go/*   https://dealshop.link/:splat   302

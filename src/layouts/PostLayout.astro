@@ -1,0 +1,101 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Disclosure from '../components/Disclosure.astro';
+import DealCard from '../components/DealCard.astro';
+import { SITE } from '../consts';
+import { fmtDate } from '../lib/content';
+import deals from '../data/deals.json';
+
+interface Props {
+  data: any;
+  slug: string;
+  section: 'guides' | 'deals';
+}
+const { data, slug, section } = Astro.props;
+const url = new URL(`/${section}/${slug}`, Astro.site).href;
+
+const linked = (data.dealIds ?? [])
+  .map((id: string) => (deals as any[]).find((d) => d.id === id))
+  .filter(Boolean);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BlogPosting',
+      '@id': `${url}#article`,
+      headline: data.title,
+      description: data.description,
+      datePublished: data.pubDate.toISOString(),
+      dateModified: (data.updatedDate ?? data.pubDate).toISOString(),
+      mainEntityOfPage: url,
+      author: {
+        '@type': 'Person',
+        name: SITE.author.name,
+        url: SITE.author.url,
+        sameAs: SITE.author.sameAs,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: SITE.title,
+        url: SITE.url,
+      },
+      ...(data.heroImage ? { image: new URL(data.heroImage, Astro.site).href } : {}),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: section === 'guides' ? 'Guides' : 'Weekly Finds',
+          item: `${SITE.url}/${section}`,
+        },
+        { '@type': 'ListItem', position: 3, name: data.title, item: url },
+      ],
+    },
+  ],
+};
+---
+<BaseLayout
+  title={data.title}
+  description={data.description}
+  image={data.heroImage}
+  schema={schema}
+>
+  <article class="wrap" style="padding-top:48px">
+    <div class="prose">
+      <p class="meta">
+        {fmtDate(data.pubDate)}
+        {data.updatedDate && <> &middot; updated {fmtDate(data.updatedDate)}</>}
+        &nbsp;&middot;&nbsp; by {SITE.author.name}
+      </p>
+      <h1>{data.title}</h1>
+      <p style="font-size:1.1rem;color:var(--ink-2)">{data.description}</p>
+
+      <Disclosure />
+
+      {data.heroImage && (
+        <figure style="margin:0 0 32px">
+          <img src={data.heroImage} alt={data.heroAlt ?? data.title} loading="eager" />
+          <figcaption class="meta" style="margin-top:8px">{data.firsthand.note}</figcaption>
+        </figure>
+      )}
+
+      <slot />
+
+      {linked.length > 0 && (
+        <section style="margin-top:44px">
+          <h2>The finds in this post</h2>
+          {linked.map((d: any) => <DealCard deal={d} />)}
+        </section>
+      )}
+
+      <hr />
+      <p class="meta">
+        Checked in store &mdash; {data.firsthand.type.replace('-', ' ')}: {data.firsthand.note}
+      </p>
+    </div>
+  </article>
+</BaseLayout>

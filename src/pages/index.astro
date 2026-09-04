@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../consts';
+import { getPublished, fmtDate } from '../lib/content';
+
+const deals = (await getPublished('deals')).slice(0, 6);
+const guides = (await getPublished('guides')).slice(0, 6);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${SITE.url}#org`,
+      name: SITE.title,
+      url: SITE.url,
+      description: SITE.description,
+      sameAs: SITE.author.sameAs,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE.url}#site`,
+      url: SITE.url,
+      name: SITE.title,
+      publisher: { '@id': `${SITE.url}#org` },
+    },
+  ],
+};
+---
+<BaseLayout title={SITE.title} description={SITE.description} schema={schema}>
+  <div class="wrap">
+    <div class="hero">
+      <h1>Real clearance finds,<br />checked in store.</h1>
+      <p class="lede">
+        I walk Walmart clearance aisles every week and post what I actually find —
+        the aisle, the tag, and what it rang up as. No scraped lists, no guessing.
+      </p>
+    </div>
+
+    <section class="block">
+      <div class="section-head">
+        <h2>This week's finds</h2>
+        <a href="/deals">All finds &rarr;</a>
+      </div>
+      {deals.length > 0 ? (
+        <ul class="card-grid">
+          {deals.map((p: any) => (
+            <li class="card">
+              <div class="card-body">
+                <span class="meta">{fmtDate(p.data.pubDate)} &middot; {p.data.store}</span>
+                <h3><a href={`/deals/${p.id}`}>{p.data.title}</a></h3>
+                <p>{p.data.description}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>First store run posts here.</p>
+      )}
+    </section>
+
+    <section class="block">
+      <div class="section-head">
+        <h2>How clearance actually works</h2>
+        <a href="/guides">All guides &rarr;</a>
+      </div>
+      <ul class="card-grid">
+        {guides.map((g: any) => (
+          <li class="card">
+            <div class="card-body">
+              <span class="pill">{g.data.pillar}</span>
+              <h3><a href={`/guides/${g.id}`}>{g.data.title}</a></h3>
+              <p>{g.data.description}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

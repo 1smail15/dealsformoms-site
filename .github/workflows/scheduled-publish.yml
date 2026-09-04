@@ -1,0 +1,27 @@
+# Scheduled publishing for a static site.
+#
+# Posts are written and merged ahead of time with a future `pubDate`. The build
+# filters them out until that date passes, so this daily rebuild is what makes
+# a queued post go live. Nothing generates content here — it only redeploys.
+#
+# Setup: Cloudflare Pages -> your project -> Settings -> Builds & deployments
+#        -> Deploy hooks -> create one, save the URL as the repo secret
+#        CLOUDFLARE_DEPLOY_HOOK.
+name: Scheduled publish
+
+on:
+  schedule:
+    # 13:05 UTC = 8:05am ET, before the US morning shopping window.
+    - cron: '5 13 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Cloudflare Pages rebuild
+        run: |
+          if [ -z "${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}" ]; then
+            echo "CLOUDFLARE_DEPLOY_HOOK secret is not set."; exit 1
+          fi
+          curl -sS -X POST "${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}" -w '\nHTTP %{http_code}\n'

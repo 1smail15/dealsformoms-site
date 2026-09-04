@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublished, fmtDate } from '../../lib/content';
+
+const guides = await getPublished('guides');
+const pillars = {
+  mechanics: 'How clearance works',
+  calendar: 'Markdown calendars',
+  tools: 'Scanning & tools',
+  buying: 'Buying guides',
+} as const;
+---
+<BaseLayout
+  title="Clearance Guides"
+  description="How Walmart clearance actually works — price codes, markdown schedules, scanning tools, and when each department gets cut."
+>
+  <div class="wrap">
+    <div class="hero">
+      <h1>Clearance Guides</h1>
+      <p class="lede">The mechanics behind the markdowns — written from what I see on the shelf, not what other blogs say.</p>
+    </div>
+
+    {Object.entries(pillars).map(([key, label]) => {
+      const items = guides.filter((g: any) => g.data.pillar === key);
+      return items.length > 0 && (
+        <section class="block">
+          <div class="section-head"><h2>{label}</h2></div>
+          <ul class="card-grid">
+            {items.map((g: any) => (
+              <li class="card">
+                <div class="card-body">
+                  <span class="meta">{fmtDate(g.data.pubDate)}</span>
+                  <h3><a href={`/guides/${g.id}`}>{g.data.title}</a></h3>
+                  <p>{g.data.description}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    })}
+  </div>
+</BaseLayout>
