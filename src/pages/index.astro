@@ -1,10 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { SITE } from '../consts';
-import { getPublished, fmtDate } from '../lib/content';
+import PostCard from '../components/PostCard.astro';
+import PromoCard from '../components/PromoCard.astro';
+import { SITE, FACEBOOK } from '../consts';
+import { getPublished } from '../lib/content';
+import allPromos from '../data/promos.json';
 
 const deals = (await getPublished('deals')).slice(0, 6);
 const guides = (await getPublished('guides')).slice(0, 6);
+const promos = allPromos.slice(0, 3);
 
 const schema = {
   '@context': 'https://schema.org',
@@ -28,15 +32,55 @@ const schema = {
 };
 ---
 <BaseLayout title={SITE.title} description={SITE.description} schema={schema}>
-  <div class="wrap">
-    <div class="hero">
-      <h1>Real clearance finds,<br />checked in store.</h1>
-      <p class="lede">
-        I walk Walmart clearance aisles every week and post what I actually find —
-        the aisle, the tag, and what it rang up as. No scraped lists, no guessing.
-      </p>
+  <div class="hero-band">
+    <div class="wrap hero">
+      <div class="hero-copy">
+        <h1>Real clearance finds,<br />checked in store.</h1>
+        <p class="lede">
+          Every week I check clearance aisles at Walmart, Target, and beyond,
+          and dig up the online promo codes worth grabbing too.
+        </p>
+        <div class="social-cta">
+          <a class="btn-social btn-fb" href={FACEBOOK.page} target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34v7.03C18.34 21.24 22 17.08 22 12.06Z"/></svg>
+            Follow us on Facebook
+          </a>
+          <a class="btn-social btn-fb-outline" href={FACEBOOK.group} target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34v7.03C18.34 21.24 22 17.08 22 12.06Z"/></svg>
+            Join our Facebook Group
+          </a>
+        </div>
+      </div>
+      <div class="hero-photos" aria-hidden="true">
+        <img src="/images/deals/bhg-towel-bundle.png" alt="" loading="eager" />
+        <img src="/images/deals/carote-pots-pans-purple.png" alt="" loading="eager" />
+        <img src="/images/deals/beautiful-bread-oven-white.png" alt="" loading="eager" />
+      </div>
+      <nav class="collage" aria-label="Browse by topic">
+        <a href="/deals" class="collage-photo" style={`background-image:url(${deals[0]?.data.heroImage ?? '/images/deals/bhg-towel-bundle.png'})`}>
+          <span>This week's<br />top finds</span>
+        </a>
+        <a href="/shop" class="collage-photo" style="background-image:url(/images/deals/cook-with-color-snack-tray.png)">
+          <span class="icon-badge"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 8V6a6 6 0 0 1 12 0v2M4 8h16l-1.2 12.1a2 2 0 0 1-2 1.9H7.2a2 2 0 0 1-2-1.9L4 8Z"/></svg></span>
+          <span>Shop best<br />online deals</span>
+        </a>
+        <a href="/guides/pillar/calendar" class="collage-photo pos-center" style="background-image:url(/images/deals/mainstays-chelsea-patio-set.png)">
+          <span class="icon-badge"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="8" cy="15" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="15" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="1.2" fill="currentColor" stroke="none"/></svg></span>
+          <span>Markdown<br />calendar</span>
+        </a>
+        <a href="/guides/pillar/mechanics" class="collage-photo" style="background-image:url(/images/deals/clearance-tag-137-pajamas.png)">
+          <span class="icon-badge"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.59 13.41 12 22l-9-9 8.59-8.59A2 2 0 0 1 13 4h6a1 1 0 0 1 1 1v6a2 2 0 0 1-.41 1.41Z"/></svg></span>
+          <span>Price code<br />decoder</span>
+        </a>
+        <a href="/guides/pillar/tools" class="collage-photo" style="background-image:url(/images/deals/walmart-app-deals-endcap.png)">
+          <span class="icon-badge"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7V4h3M20 7V4h-3M4 17v3h3M20 17v3h-3"/><path d="M4 12h16"/></svg></span>
+          <span>Scan &amp;<br />save</span>
+        </a>
+      </nav>
     </div>
+  </div>
 
+  <div class="wrap">
     <section class="block">
       <div class="section-head">
         <h2>This week's finds</h2>
@@ -44,18 +88,22 @@ const schema = {
       </div>
       {deals.length > 0 ? (
         <ul class="card-grid">
-          {deals.map((p: any) => (
-            <li class="card">
-              <div class="card-body">
-                <span class="meta">{fmtDate(p.data.pubDate)} &middot; {p.data.store}</span>
-                <h3><a href={`/deals/${p.id}`}>{p.data.title}</a></h3>
-                <p>{p.data.description}</p>
-              </div>
-            </li>
-          ))}
+          {deals.map((p: any) => <PostCard post={p} section="deals" />)}
         </ul>
       ) : (
         <p>First store run posts here.</p>
+      )}
+    </section>
+
+    <section class="block">
+      <div class="section-head">
+        <h2>Online promo codes</h2>
+        <a href="/promos">All promo codes &rarr;</a>
+      </div>
+      {promos.length > 0 ? (
+        promos.map((p: any) => <PromoCard promo={p} />)
+      ) : (
+        <p>No active promo codes right now — check back soon.</p>
       )}
     </section>
 
@@ -65,15 +113,7 @@ const schema = {
         <a href="/guides">All guides &rarr;</a>
       </div>
       <ul class="card-grid">
-        {guides.map((g: any) => (
-          <li class="card">
-            <div class="card-body">
-              <span class="pill">{g.data.pillar}</span>
-              <h3><a href={`/guides/${g.id}`}>{g.data.title}</a></h3>
-              <p>{g.data.description}</p>
-            </div>
-          </li>
-        ))}
+        {guides.map((g: any) => <PostCard post={g} section="guides" />)}
       </ul>
     </section>
   </div>

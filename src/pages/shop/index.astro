@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import catalog from '../../data/catalog.json';
+
+const groups = new Map<string, { label: string; n: number; image?: string }>();
+for (const p of catalog as any[]) {
+  const cur = groups.get(p.category);
+  if (cur) {
+    cur.n++;
+    if (!cur.image && p.image) cur.image = p.image;
+  } else {
+    groups.set(p.category, { label: p.categoryLabel, n: 1, image: p.image });
+  }
+}
+const categories = [...groups.entries()]
+  .map(([key, v]) => ({ key, ...v }))
+  .sort((a, b) => b.n - a.n);
+---
+<BaseLayout
+  title="Shop Best Online Deals"
+  description="Online deals sourced and organized by category — not in-store finds, just sales worth knowing about."
+>
+  <div class="wrap">
+    <div class="hero-plain tone tone-blue">
+      <h1>Shop Best Online Deals</h1>
+      <p class="lede">
+        These are online deals I source and share — not something I walked an
+        aisle for. Browse by category below; each one is refreshed as prices
+        change.
+      </p>
+    </div>
+    <section class="block">
+      <ul class="card-grid">
+        {categories.map((c) => (
+          <li class="card">
+            <a class="card-media" href={`/shop/${c.key}`}>
+              {c.image
+                ? <img src={c.image} alt={c.label} loading="lazy" decoding="async" width="400" height="400" style="object-position: top center" />
+                : <div class="card-media-placeholder" aria-hidden="true"><span>{c.label}</span></div>}
+              <span class="pill pill-icon" style="position:absolute;left:10px;top:10px;background:rgba(20,20,26,.85);color:#fff">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8V6a6 6 0 0 1 12 0v2M4 8h16l-1.2 12.1a2 2 0 0 1-2 1.9H7.2a2 2 0 0 1-2-1.9L4 8Z"/></svg>
+                Online deal
+              </span>
+            </a>
+            <div class="card-body">
+              <h3><a href={`/shop/${c.key}`}>{c.label}</a></h3>
+              <p class="meta" style="color:var(--muted)">{c.n} deal{c.n === 1 ? '' : 's'}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

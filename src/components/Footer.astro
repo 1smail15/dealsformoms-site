@@ -1,4 +1,5 @@
 ---
+import { FACEBOOK } from '../consts';
 const year = new Date().getFullYear();
 ---
 <footer class="site-foot">
@@ -11,6 +12,10 @@ const year = new Date().getFullYear();
       <a href="/editorial-policy">Editorial Policy</a>
       <a href="/privacy">Privacy</a>
       <a href="/rss.xml">RSS</a>
+    </nav>
+    <nav class="nav" aria-label="Facebook" style="font-size:.86rem">
+      <a href={FACEBOOK.page} target="_blank" rel="noopener">Facebook Page</a>
+      <a href={FACEBOOK.group} target="_blank" rel="noopener">Facebook Group</a>
     </nav>
   </div>
 </footer>

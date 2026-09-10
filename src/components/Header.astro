@@ -1,14 +1,114 @@
 ---
 import { SITE } from '../consts';
+
+const path = Astro.url.pathname;
+const isCalendar = path.startsWith('/guides/pillar/calendar');
+const links = [
+  { href: '/deals', label: 'This Week', tone: 'yellow', active: path.startsWith('/deals') },
+  { href: '/shop', label: 'Shop', tone: 'blue', active: path.startsWith('/shop') },
+  { href: '/promos', label: 'Promo Codes', tone: 'red', active: path.startsWith('/promos') },
+  { href: '/guides', label: 'Guides', tone: 'ink', active: path.startsWith('/guides') && !isCalendar },
+  { href: '/guides/pillar/calendar', label: 'Markdown Calendar', tone: 'red', active: isCalendar },
+  { href: '/about', label: 'About', tone: 'ink', active: path.startsWith('/about') },
+];
 ---
 <header class="site-head">
   <div class="wrap">
     <a class="brand" href="/">Deals For <span>Moms</span></a>
-    <nav class="nav" aria-label="Main">
-      <a href="/deals">This Week</a>
-      <a href="/guides">Guides</a>
-      <a href="/guides?pillar=calendar">Markdown Calendar</a>
-      <a href="/about">About</a>
-    </nav>
+    <div class="head-controls">
+      <button type="button" id="search-open" class="icon-btn" aria-haspopup="dialog" aria-controls="search-dialog">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="sr-only">Search deals</span>
+      </button>
+      <input type="checkbox" id="nav-toggle" class="nav-toggle-input" />
+      <label for="nav-toggle" class="nav-toggle" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </label>
+      <nav class="nav" aria-label="Main">
+        {links.map((l) => (
+          <a href={l.href} class={`nav-tone-${l.tone}`} aria-current={l.active ? 'page' : undefined}>{l.label}</a>
+        ))}
+      </nav>
+    </div>
   </div>
 </header>
+
+<dialog id="search-dialog" aria-label="Search the site">
+  <div class="search-panel">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <label for="search-input" class="sr-only">Search deals, promo codes, and guides</label>
+      <input type="search" id="search-input" placeholder="Search deals, promo codes, guides…" autocomplete="off" />
+      <button type="button" id="search-close" class="icon-btn" aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <ul id="search-results" class="search-results"></ul>
+  </div>
+</dialog>
+
+<script>
+  type SearchItem = { title: string; desc: string; url: string; type: string };
+
+  const openBtn = document.getElementById('search-open') as HTMLButtonElement;
+  const closeBtn = document.getElementById('search-close') as HTMLButtonElement;
+  const dialog = document.getElementById('search-dialog') as HTMLDialogElement;
+  const input = document.getElementById('search-input') as HTMLInputElement;
+  const results = document.getElementById('search-results') as HTMLUListElement;
+
+  let index: SearchItem[] | null = null;
+  let debounceTimer: ReturnType<typeof setTimeout>;
+
+  async function loadIndex() {
+    if (index) return index;
+    const res = await fetch('/search-index.json');
+    index = await res.json();
+    return index;
+  }
+
+  function render(query: string, items: SearchItem[]) {
+    const q = query.trim().toLowerCase();
+    if (!q) {
+      results.innerHTML = '<li class="search-hint">Try “clearance codes”, a brand name, or a category.</li>';
+      return;
+    }
+    const matches = items
+      .filter((i) => i.title.toLowerCase().includes(q) || i.desc.toLowerCase().includes(q))
+      .slice(0, 8);
+    if (matches.length === 0) {
+      results.innerHTML = `<li class="search-hint">No matches for &ldquo;${escapeHtml(query)}&rdquo; — try a different word, like a brand or a category.</li>`;
+      return;
+    }
+    results.innerHTML = matches
+      .map(
+        (m) => `<li><a href="${m.url}"><span class="search-type">${escapeHtml(m.type)}</span><span class="search-title">${escapeHtml(m.title)}</span><span class="search-desc">${escapeHtml(m.desc)}</span></a></li>`
+      )
+      .join('');
+  }
+
+  function escapeHtml(s: string) {
+    return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
+  }
+
+  async function openSearch() {
+    dialog.showModal();
+    input.value = '';
+    render('', []);
+    input.focus();
+    const items = await loadIndex();
+    if (items) render(input.value, items);
+  }
+
+  openBtn.addEventListener('click', openSearch);
+  closeBtn.addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+      const items = await loadIndex();
+      if (items) render(input.value, items);
+    }, 120);
+  });
+</script>

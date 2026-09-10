@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PromoCard from '../components/PromoCard.astro';
+import Disclosure from '../components/Disclosure.astro';
+import { SITE } from '../consts';
+import promos from '../data/promos.json';
+
+const brandList = [...new Set(promos.map((p: any) => p.brand))];
+const brandsForTitle = brandList.slice(0, 3).join(', ') + (brandList.length > 3 ? ' & More' : '');
+const title = `Promo Codes: ${brandsForTitle}`;
+const description = promos.length
+  ? `Current codes: ${promos.slice(0, 3).map((p: any) => `${p.brand} — ${p.title}`).join(', ')}. Updated regularly.`.slice(0, 165)
+  : 'Current online promo codes and coupons, updated regularly.';
+const url = new URL('/promos', SITE.url).href;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'ItemList',
+      '@id': `${url}#list`,
+      name: 'Current promo codes',
+      itemListElement: promos.map((p: any, i: number) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `${url}#${p.id}`,
+        item: {
+          '@type': 'Offer',
+          name: `${p.brand}: ${p.title}`,
+          description: p.description,
+          url: p.href,
+          ...(p.expires ? { priceValidUntil: p.expires } : {}),
+          seller: { '@type': 'Organization', name: p.brand },
+        },
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Promo Codes', item: url },
+      ],
+    },
+  ],
+};
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <div class="wrap">
+    <div class="hero-plain tone tone-red">
+      <h1>Promo Codes</h1>
+      <p class="lede">
+        Online sales and codes from brands I partner with — not something I
+        photographed in a store. Check dates and terms before you buy; these
+        expire fast.
+      </p>
+    </div>
+    <section class="block">
+      <Disclosure />
+      {promos.length > 0 ? (
+        promos.map((p: any) => <PromoCard promo={p} />)
+      ) : (
+        <p>No active promo codes right now — check back soon.</p>
+      )}
+    </section>
+  </div>
+</BaseLayout>

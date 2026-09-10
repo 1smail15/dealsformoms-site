@@ -1,0 +1,44 @@
+---
+import { fmtDate } from '../lib/content';
+
+interface Props {
+  post: any;
+  section: 'deals' | 'guides';
+}
+const { post, section } = Astro.props;
+const { data } = post;
+
+const firsthandLabel: Record<string, string> = {
+  'store-photo': '📸 Store photo',
+  receipt: '🧾 Receipt',
+  'shelf-tag': '🏷️ Shelf tag',
+  'app-screenshot': '📱 App scan',
+};
+---
+<li class="card">
+  <a class="card-media" href={`/${section}/${post.id}`}>
+    {data.heroImage ? (
+      <img
+        src={data.heroImage}
+        alt={data.heroAlt ?? data.title}
+        loading="lazy"
+        decoding="async"
+        width="400"
+        height="400"
+      />
+    ) : (
+      <div class="card-media-placeholder" aria-hidden="true">
+        <span>{firsthandLabel[data.firsthand.type] ?? '📸 Verified in store'}</span>
+      </div>
+    )}
+    {data.heroImage && data.firsthand && (
+      <span class="proof-badge">{firsthandLabel[data.firsthand.type]}</span>
+    )}
+    <span class="store-badge">{section === 'deals' ? data.store : data.pillar}</span>
+  </a>
+  <div class="card-body">
+    <span class="meta">{fmtDate(data.pubDate)}</span>
+    <h3><a href={`/${section}/${post.id}`}>{data.title}</a></h3>
+    <p>{data.description}</p>
+  </div>
+</li>

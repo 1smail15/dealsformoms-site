@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostCard from '../../../components/PostCard.astro';
+import { getPublished } from '../../../lib/content';
+
+export function getStaticPaths() {
+  return ['mechanics', 'calendar', 'tools', 'buying'].map((pillar) => ({ params: { pillar } }));
+}
+
+const pillars = {
+  mechanics: 'How clearance works',
+  calendar: 'Markdown calendars',
+  tools: 'Scanning & tools',
+  buying: 'Buying guides',
+} as const;
+
+const { pillar } = Astro.params;
+const label = pillars[pillar as keyof typeof pillars];
+const guides = (await getPublished('guides')).filter((g: any) => g.data.pillar === pillar);
+---
+<BaseLayout
+  title={`${label} | Clearance Guides`}
+  description={`${label} — how Walmart clearance actually works, written from what I see on the shelf.`}
+>
+  <div class="wrap">
+    <div class="hero-plain tone tone-ink">
+      <h1>{label}</h1>
+      <p class="lede">The mechanics behind the markdowns — written from what I see on the shelf, not what other blogs say.</p>
+      <p><a href="/guides">&larr; All guides</a></p>
+    </div>
+    <section class="block">
+      {guides.length > 0 ? (
+        <ul class="card-grid">
+          {guides.map((g: any) => <PostCard post={g} section="guides" />)}
+        </ul>
+      ) : (
+        <p>No {label.toLowerCase()} posts yet — check back soon.</p>
+      )}
+    </section>
+  </div>
+</BaseLayout>

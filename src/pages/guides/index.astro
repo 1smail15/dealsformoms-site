@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getPublished, fmtDate } from '../../lib/content';
+import PostCard from '../../components/PostCard.astro';
+import { getPublished } from '../../lib/content';
 
 const guides = await getPublished('guides');
 const pillars = {
@@ -15,9 +16,14 @@ const pillars = {
   description="How Walmart clearance actually works — price codes, markdown schedules, scanning tools, and when each department gets cut."
 >
   <div class="wrap">
-    <div class="hero">
+    <div class="hero-plain tone tone-ink">
       <h1>Clearance Guides</h1>
       <p class="lede">The mechanics behind the markdowns — written from what I see on the shelf, not what other blogs say.</p>
+      <nav class="pillar-nav" aria-label="Browse by pillar">
+        {Object.entries(pillars).map(([key, label]) => (
+          <a href={`/guides/pillar/${key}`}>{label}</a>
+        ))}
+      </nav>
     </div>
 
     {Object.entries(pillars).map(([key, label]) => {
@@ -26,15 +32,7 @@ const pillars = {
         <section class="block">
           <div class="section-head"><h2>{label}</h2></div>
           <ul class="card-grid">
-            {items.map((g: any) => (
-              <li class="card">
-                <div class="card-body">
-                  <span class="meta">{fmtDate(g.data.pubDate)}</span>
-                  <h3><a href={`/guides/${g.id}`}>{g.data.title}</a></h3>
-                  <p>{g.data.description}</p>
-                </div>
-              </li>
-            ))}
+            {items.map((g: any) => <PostCard post={g} section="guides" />)}
           </ul>
         </section>
       );

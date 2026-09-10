@@ -1,29 +1,30 @@
 ---
 title: "Walmart Clearance: What I Found This Week"
-description: "Six clearance finds from a Supercenter run — the aisle, the tag price, and what actually rang up at the register."
+description: "A purple Carote cookware set at $45 off and a rotating snack tray with a built-in ice pack — two finds from this week's Supercenter run."
 pubDate: 2026-09-03
 store: Walmart
 published: true
-dealIds: []
+dealIds: ["carote-pots-pans-purple-2026-09", "cook-with-color-snack-tray-2026-09"]
+heroImage: "/images/deals/carote-pots-pans-purple.png"
+heroAlt: "A purple Carote nonstick pots and pans set with utensils and a flower-shaped trivet on a kitchen counter"
 firsthand:
-  type: receipt
-  note: "All six scanned at the register on 5 Sep 2026. Receipt photo in the post."
-tags: ["walmart", "weekly finds"]
+  type: store-photo
+  note: "Both photographed at home right after checkout — the cookware set on the counter, the snack tray still in the cart."
+tags: ["walmart", "weekly finds", "kitchen"]
 ---
 
-Store run this week was slower than usual — the seasonal reset had not hit yet in
-my Supercenter, so most of the movement was in home goods and toys.
+## $45 off a full cookware set
 
-## What was worth stopping for
+The **Carote Nonstick Detachable Pots and Pans Set** (6 pieces, Magenta
+Purple) rang up at $34.97, down from $79.99 — a $45.02 markdown. Ceramic
+nonstick coating, oven and dishwasher safe up to 480°F, and the handles
+detach so the whole set nests flat for storage.
 
-The best tag of the run was on an endcap that was not marked as clearance at all.
-Two items on the same shelf, same brand, one at full price and one at a final
-markdown, because the second had been re-ticketed and put back in the wrong spot.
-That happens constantly and it is why scanning beats reading tags.
+## A snack tray that showed up in the cart by surprise
 
-## What I skipped
-
-Patio was still at its first markdown tier. Based on last year's timing in this
-store, it drops again in about two weeks — I would wait.
+Wasn't planning on this one, but the **Cook with Color 360-Degree Rotating
+Snack Tray** talked me into it — $13.64, divided compartments that spin on
+a rotating base, plus a removable ice pack built into the base to keep
+things cold. Good for road trips or just keeping snacks sorted at home.
 
 *Prices and stock are per store and change daily. Scan before you drive.*

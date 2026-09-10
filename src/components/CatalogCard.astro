@@ -1,0 +1,47 @@
+---
+interface Props {
+  product: {
+    id: string;
+    name: string;
+    image?: string;
+    price?: string;
+    priceOld?: string;
+    description?: string;
+    href: string;
+  };
+}
+const { product } = Astro.props;
+
+const pct = (() => {
+  if (!product.price || !product.priceOld) return null;
+  const now = Number(String(product.price).replace(/[^0-9.]/g, ''));
+  const was = Number(String(product.priceOld).replace(/[^0-9.]/g, ''));
+  if (!now || !was || was <= now) return null;
+  return Math.round((1 - now / was) * 100);
+})();
+---
+<div class="deal">
+  <div class="deal-media">
+    {product.image
+      ? <img src={product.image} alt={product.name} width="108" height="108" loading="lazy" decoding="async" />
+      : <div style="width:108px;height:108px;background:#f2f0eb;border-radius:6px"></div>}
+    {pct && <span class="pct-badge">{pct}% off</span>}
+  </div>
+  <div>
+    <span class="pill pill-icon">
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8V6a6 6 0 0 1 12 0v2M4 8h16l-1.2 12.1a2 2 0 0 1-2 1.9H7.2a2 2 0 0 1-2-1.9L4 8Z"/></svg>
+      Online deal
+    </span>
+    <p class="deal-name">{product.name}</p>
+    {product.description && <p class="promo-desc">{product.description}</p>}
+    {product.price && (
+      <p class="price">
+        {product.price}
+        {product.priceOld && <s>{product.priceOld}</s>}
+      </p>
+    )}
+    <a class="btn" href={product.href} rel="sponsored nofollow noopener" target="_blank">
+      See this deal
+    </a>
+  </div>
+</div>

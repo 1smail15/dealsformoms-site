@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CatalogCard from '../../components/CatalogCard.astro';
+import Disclosure from '../../components/Disclosure.astro';
+import { SITE } from '../../consts';
+import catalog from '../../data/catalog.json';
+
+export function getStaticPaths() {
+  const seen = new Map();
+  for (const p of catalog as any[]) {
+    if (!seen.has(p.category)) seen.set(p.category, p.categoryLabel);
+  }
+  return [...seen.entries()].map(([category, label]) => ({
+    params: { category },
+    props: { label },
+  }));
+}
+
+const { category } = Astro.params;
+const { label } = Astro.props;
+
+const intros: Record<string, string> = {
+  'seasonal-holiday': "Holiday decorations and party pieces — the sales that only make sense a few weeks a year.",
+  'baby-nursery': "Nursery gear and baby basics, priced down from brands worth stocking up on.",
+  'pet-supplies': "Beds, carriers, and outdoor setups for the pets — sourced online, not from a store aisle.",
+  'kids-toys': "Ride-ons, outdoor play sets, and toys worth grabbing before they sell out.",
+  'fitness-exercise': "Home gym equipment at a fraction of gym-membership money.",
+  'electric-rides': "Electric bikes and scooters, discounted enough to actually consider.",
+  'electronics-tech': "Phones, tablets, and the tech that's actually worth buying refurbished or on sale.",
+  'kitchen-appliances': "Kitchen appliances worth clearing counter space for.",
+  'furniture-storage': "Furniture and storage pieces at real markdowns, not the fake-crossed-out kind.",
+  'home-decor-bath': "Small home upgrades — decor, bath, and the stuff that makes a room feel done.",
+  'health-mobility': "Mobility and daily-living aids, priced better than the medical supply store.",
+  'beauty-personal-care': "Skincare, hair tools, and personal care picks worth the online price.",
+  'jewelry-accessories': "A few jewelry pieces that came across my feed at prices worth sharing.",
+  shoes: "Shoes and slippers on sale — comfort-first, priced right.",
+  'patio-outdoor': "Patio furniture, camping gear, and yard setups for whenever the season's right.",
+  'womens-fashion': "Women's clothing finds, pulled from online sales as they come up.",
+  'mens-fashion': "Men's clothing at a discount, worth a look before it's gone.",
+  'more-finds': "A mixed batch of online deals that didn't fit neatly anywhere else.",
+};
+
+const products = (catalog as any[]).filter((p) => p.category === category);
+const url = new URL(`/shop/${category}`, SITE.url).href;
+const title = `${label} Deals`;
+const description = `${intros[category as string] ?? `Online ${label.toLowerCase()} deals.`} ${products.length} current picks.`.slice(0, 165);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'ItemList',
+      '@id': `${url}#list`,
+      name: `${label} deals`,
+      itemListElement: products.slice(0, 50).map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: {
+          '@type': 'Product',
+          name: p.name,
+          image: p.image,
+          offers: {
+            '@type': 'Offer',
+            url: p.href,
+            priceCurrency: 'USD',
+            price: (p.price ?? '').replace(/[^0-9.]/g, '') || undefined,
+          },
+        },
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Shop', item: new URL('/shop', SITE.url).href },
+        { '@type': 'ListItem', position: 3, name: label, item: url },
+      ],
+    },
+  ],
+};
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <div class="wrap">
+    <div class="hero-plain tone tone-blue">
+      <h1>{label}</h1>
+      <p class="lede">{intros[category as string] ?? `Online ${label.toLowerCase()} deals.`}</p>
+      <p><a href="/shop">&larr; All categories</a></p>
+    </div>
+    <section class="block">
+      <Disclosure />
+      {products.map((p) => <CatalogCard product={p} />)}
+    </section>
+  </div>
+</BaseLayout>

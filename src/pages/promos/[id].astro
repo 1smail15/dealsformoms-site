@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Disclosure from '../../components/Disclosure.astro';
+import { SITE } from '../../consts';
+import promos from '../../data/promos.json';
+
+export function getStaticPaths() {
+  return (promos as any[]).map((p) => ({ params: { id: p.id }, props: { promo: p } }));
+}
+
+const { promo } = Astro.props;
+const url = new URL(`/promos/${promo.id}`, SITE.url).href;
+const expiresLabel = promo.expires
+  ? new Date(promo.expires + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  : null;
+const monthYear = promo.expires
+  ? new Date(promo.expires + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+  : '';
+
+const title = `${promo.brand} Promo Code: ${promo.title} (${monthYear})`;
+const description = `${promo.brand} — ${promo.title}. ${promo.description ?? ''}`.slice(0, 165);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Offer',
+      '@id': `${url}#offer`,
+      name: `${promo.brand}: ${promo.title}`,
+      description: promo.description,
+      url: promo.href,
+      ...(promo.expires ? { priceValidUntil: promo.expires } : {}),
+      seller: { '@type': 'Organization', name: promo.brand },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+        { '@type': 'ListItem', position: 2, name: 'Promo Codes', item: new URL('/promos', SITE.url).href },
+        { '@type': 'ListItem', position: 3, name: promo.brand, item: url },
+      ],
+    },
+  ],
+};
+---
+<BaseLayout title={title} description={description} schema={schema}>
+  <article class="wrap" style="padding-top:48px">
+    <div class="prose">
+      <p class="meta">Promo code &middot; by {SITE.author.name}</p>
+      <h1>{promo.brand} Promo Code: {promo.title}</h1>
+      <p style="font-size:1.1rem;color:var(--ink-2)">{promo.description}</p>
+
+      <Disclosure />
+
+      {promo.image && (
+        <figure style="margin:0 0 32px;max-width:200px">
+          <img src={promo.image} alt={`${promo.brand} logo`} loading="eager" />
+        </figure>
+      )}
+
+      {promo.id === 'ring-outdoor-cam-pro-2026-09' && (
+        <>
+          <p>
+            Ring's Outdoor Cam Pro is the weatherproof, motion-activated
+            camera in their outdoor lineup — the one most people add when
+            they want eyes on the driveway, porch, or side gate rather than
+            just the front door. At 35% off it undercuts most comparable
+            outdoor cams from other brands.
+          </p>
+          <p>
+            Worth knowing before you buy: some Ring features (like shared
+            user access and video history beyond a few hours) need a Ring
+            Protect subscription on top of the camera itself. If you
+            already run a Ring system, this is a straightforward add-on;
+            if you're starting from scratch, check what's included versus
+            what needs the subscription before checking out.
+          </p>
+        </>
+      )}
+      {promo.id === 'soma-sleep-2026-09' && (
+        <>
+          <p>
+            Soma's sleep category covers pajama sets, robes, and loungewear
+            — this is their once-in-a-while deep discount on it, not a
+            everyday markdown. If you've been meaning to replace worn-out
+            pajamas or stock up before it gets cold, 50% off is a real price
+            drop, not a small tweak.
+          </p>
+          <p>
+            Sizing runs true to Soma's regular size chart across the sleep
+            line; check the size guide on the product page since cuts vary
+            between their pajama sets and robes.
+          </p>
+        </>
+      )}
+      {promo.id === 'chicos-jackets-pants-2026-09' && (
+        <>
+          <p>
+            Chico's jackets and pants are built with their signature
+            travel-friendly fabrics — the kind that pack without wrinkling.
+            40% off sitewide on both categories at once is a wider discount
+            than their usual single-category promos, and it lands right at
+            the fall wardrobe-transition point.
+          </p>
+          <p>
+            Chico's uses its own sizing scale (0–4 rather than standard
+            numeric sizes) — if you haven't shopped there before, their
+            online size guide is worth a look before ordering.
+          </p>
+        </>
+      )}
+      {promo.id === 'swanson-vitamins-2026-09' && (
+        <>
+          <p>
+            Swanson Health is a vitamins-and-supplements retailer that
+            already prices below most drugstore brands — this Labor Day
+            sale stacks 35% off with double rewards points, so the value
+            compounds if you're a repeat buyer restocking a family
+            supplement routine rather than a one-time shopper.
+          </p>
+          <p>
+            The rewards points only pay off on your next order, so this
+            deal is best if you plan to buy from Swanson again — not
+            necessarily the cheapest one-time price versus other retailers.
+          </p>
+        </>
+      )}
+
+      <p class="meta" style="margin-top:28px">
+        {expiresLabel ? `Offer ends ${expiresLabel}.` : ''} Terms and pricing
+        set by {promo.brand}, not by this site — confirm details at checkout.
+      </p>
+
+      <a class="btn" href={promo.href} rel="sponsored nofollow noopener" target="_blank" style="margin-top:8px">
+        Get this deal at {promo.brand}
+      </a>
+
+      <hr />
+      <p class="meta">
+        <a href="/promos">&larr; All promo codes</a>
+      </p>
+    </div>
+  </article>
+</BaseLayout>

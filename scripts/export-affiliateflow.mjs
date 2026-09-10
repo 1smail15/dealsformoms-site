@@ -6,10 +6,19 @@
  *   npm run export:deals
  *   npm run export:deals -- --db "C:\path\to\automation.db" --limit 200
  *
+ * Uses sql.js (pure WASM SQLite reader) instead of better-sqlite3 — no
+ * native build toolchain (Python/VS Build Tools) required on this machine.
+ *
+ * Known-issue update (2026-09-10): affiliate_links.walmart_product_id is
+ * NULL on every row (the FK is never written by AffiliateFlow), but
+ * affiliate_links.original_url matches walmart_products.product_url
+ * exactly — 199/199 rows joined cleanly on that basis. Joining on the URL
+ * instead of the FK is the actual fix; no AffiliateFlow-side change needed.
+ *
  * The database is read-only here. Nothing is written back to AffiliateFlow.
  */
-import Database from 'better-sqlite3';
-import { writeFileSync, existsSync } from 'node:fs';
+import initSqlJs from 'sql.js';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve, join } from 'node:path';
 import os from 'node:os';
@@ -23,10 +32,7 @@ const arg = (name, fallback) => {
   return i !== -1 && args[i + 1] ? args[i + 1] : fallback;
 };
 
-const DEFAULT_DB = join(
-  os.homedir(),
-  'OneDrive', 'Desktop', 'AffiliateFlow', 'fb-automation-app', 'database', 'automation.db'
-);
+const DEFAULT_DB = join(os.homedir(), 'AppData', 'Roaming', 'AffiliateFlow', 'automation.db');
 
 const dbPath = resolve(arg('db', DEFAULT_DB));
 const limit = Number(arg('limit', 300));
@@ -37,9 +43,17 @@ if (!existsSync(dbPath)) {
   process.exit(1);
 }
 
-const db = new Database(dbPath, { readonly: true, fileMustExist: true });
+const SQL = await initSqlJs();
+const db = new SQL.Database(readFileSync(dbPath));
 
-const rows = db.prepare(`
+const q = (sql) => {
+  const r = db.exec(sql);
+  if (!r[0]) return [];
+  const cols = r[0].columns;
+  return r[0].values.map((row) => Object.fromEntries(row.map((v, i) => [cols[i], v])));
+};
+
+const rows = q(`
   SELECT
     w.id            AS id,
     w.product_name  AS name,
@@ -50,11 +64,11 @@ const rows = db.prepare(`
     a.affiliate_link    AS affiliateLink,
     a.platform          AS platform
   FROM walmart_products w
-  LEFT JOIN affiliate_links a ON a.walmart_product_id = w.id
+  LEFT JOIN affiliate_links a ON a.original_url = w.product_url
   WHERE w.product_name IS NOT NULL AND TRIM(w.product_name) <> ''
   ORDER BY w.id DESC
-  LIMIT ?
-`).all(limit);
+  LIMIT ${limit}
+`);
 
 /** dealshop.link/<code> -> /go/<code>, so clicks land in the existing D1 tracker. */
 const toHref = (affiliateLink, productUrl) => {

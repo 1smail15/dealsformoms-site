@@ -1,34 +1,22 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getPublished, fmtDate } from '../../lib/content';
+import PostCard from '../../components/PostCard.astro';
+import { getPublished } from '../../lib/content';
 
 const posts = await getPublished('deals');
 ---
 <BaseLayout
   title="This Week's Clearance Finds"
-  description="Walmart clearance finds I checked in store this week — with the aisle, the tag price, and what it rang up as."
+  description="Clearance finds I checked in store this week — with the aisle, the tag price, and what it rang up as."
 >
   <div class="wrap">
-    <div class="hero">
+    <div class="hero-plain tone tone-yellow">
       <h1>This Week's Finds</h1>
       <p class="lede">Everything here was on a shelf I walked. Stock is store-by-store, so scan before you drive.</p>
     </div>
     <section class="block">
       <ul class="card-grid">
-        {posts.map((p: any) => (
-          <li class="card">
-            {p.data.heroImage && (
-              <a href={`/deals/${p.id}`}>
-                <img src={p.data.heroImage} alt={p.data.heroAlt ?? p.data.title} loading="lazy" style="border-radius:0;display:block;aspect-ratio:16/10;object-fit:cover" />
-              </a>
-            )}
-            <div class="card-body">
-              <span class="meta">{fmtDate(p.data.pubDate)} &middot; {p.data.store}</span>
-              <h3><a href={`/deals/${p.id}`}>{p.data.title}</a></h3>
-              <p>{p.data.description}</p>
-            </div>
-          </li>
-        ))}
+        {posts.map((p: any) => <PostCard post={p} section="deals" />)}
       </ul>
       {posts.length === 0 && <p>No finds published yet — check back after this week's store run.</p>}
     </section>

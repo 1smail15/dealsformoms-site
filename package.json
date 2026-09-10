@@ -7,15 +7,14 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "export:deals": "node scripts/export-affiliateflow.mjs"
+    "export:deals": "node scripts/export-affiliateflow.mjs",
+    "export:catalog": "node scripts/export-catalog.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.2.0",
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.2.1",
-    "astro": "^5.6.0"
-  },
-  "devDependencies": {
-    "better-sqlite3": "^11.7.0"
+    "astro": "^5.6.0",
+    "sql.js": "^1.14.2"
   }
 }

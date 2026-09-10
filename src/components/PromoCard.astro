@@ -1,0 +1,34 @@
+---
+interface Props {
+  promo: {
+    id: string;
+    brand: string;
+    title: string;
+    description?: string;
+    image?: string;
+    href: string;
+    expires?: string;
+  };
+}
+const { promo } = Astro.props;
+const expiresLabel = promo.expires
+  ? new Date(promo.expires + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  : null;
+---
+<div class="promo" id={promo.id}>
+  <div class="promo-media">
+    {promo.image
+      ? <img src={promo.image} alt={`${promo.brand} logo`} width="72" height="72" loading="lazy" decoding="async" />
+      : <div style="width:72px;height:72px;background:#f2f0eb;border-radius:6px"></div>}
+  </div>
+  <div>
+    <span class="pill">🎟️ Promo code</span>
+    <p class="promo-brand">{promo.brand}</p>
+    <p class="promo-title"><a href={`/promos/${promo.id}`}>{promo.title}</a></p>
+    {promo.description && <p class="promo-desc">{promo.description}</p>}
+    {expiresLabel && <p class="meta" style="margin:2px 0 8px">Ends {expiresLabel}</p>}
+    <a class="btn" href={promo.href} rel="sponsored nofollow noopener" target="_blank">
+      Get this deal at {promo.brand}
+    </a>
+  </div>
+</div>
