@@ -68,6 +68,25 @@ own. Write ahead in batches; don't generate at publish time.
   the sitemap.
 - FTC disclosure renders above the first affiliate link on every post.
 
+## Email list — needs a Worker route (not yet wired)
+
+`src/components/Newsletter.astro` (homepage section + compact footer variant)
+POSTs `{ email, source }` as JSON to `https://dealshop.link/subscribe`. That
+route **does not exist yet** — it needs to be added to the existing
+`dealshop.link` Cloudflare Worker (the same one that handles `/go/<code>`
+redirects on D1), since that Worker's source isn't in this repo. Until it's
+added, the form fails with the "couldn't sign you up" error state (by
+design — it doesn't pretend to succeed).
+
+What the route needs to do:
+1. Accept `POST /subscribe`, body `{ email: string, source: string }`.
+2. Validate `email` (basic shape check is enough).
+3. Insert into a D1 table, e.g. `subscribers(email TEXT UNIQUE, source TEXT,
+   created_at TEXT)` — dedupe on `email`.
+4. Return `2xx` JSON on success; the form only checks `res.ok`.
+5. CORS: allow `https://dealsformoms.us` to POST cross-origin (the Worker is
+   on a different origin than the site).
+
 ## Known data issue
 
 `walmart_products` and `affiliate_links` in AffiliateFlow's SQLite **cannot be

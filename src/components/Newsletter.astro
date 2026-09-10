@@ -1,0 +1,69 @@
+---
+interface Props {
+  variant?: 'section' | 'inline';
+}
+const { variant = 'section' } = Astro.props;
+const formId = variant === 'inline' ? 'newsletter-inline' : 'newsletter-section';
+---
+<div class={`newsletter newsletter-${variant}`}>
+  <div class="newsletter-copy">
+    <h2>Get the best deals in your inbox</h2>
+    <p>One email a week — the finds worth knowing about. No spam, unsubscribe anytime.</p>
+  </div>
+  <form class="newsletter-form" data-newsletter-form>
+    <label for={`${formId}-email`} class="newsletter-label">Email address</label>
+    <div class="newsletter-field">
+      <input
+        type="email"
+        id={`${formId}-email`}
+        name="email"
+        placeholder="you@email.com"
+        autocomplete="email"
+        required
+      />
+      <button type="submit">
+        <span class="btn-text">Join</span>
+      </button>
+    </div>
+    <p class="newsletter-status" role="status" aria-live="polite"></p>
+  </form>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]').forEach((form) => {
+    const status = form.querySelector('.newsletter-status') as HTMLParagraphElement;
+    const button = form.querySelector('button') as HTMLButtonElement;
+    const btnText = button.querySelector('.btn-text') as HTMLSpanElement;
+    const input = form.querySelector('input') as HTMLInputElement;
+    const originalLabel = btnText.textContent ?? 'Join';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = input.value.trim();
+      if (!email) return;
+
+      button.disabled = true;
+      btnText.textContent = 'Joining…';
+      status.textContent = '';
+      status.className = 'newsletter-status';
+
+      try {
+        const res = await fetch('https://dealshop.link/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, source: location.pathname }),
+        });
+        if (!res.ok) throw new Error('bad status');
+        status.textContent = "You're in! Check your inbox to confirm.";
+        status.classList.add('is-success');
+        form.reset();
+      } catch {
+        status.textContent = "Couldn't sign you up right now — try again in a bit.";
+        status.classList.add('is-error');
+      } finally {
+        button.disabled = false;
+        btnText.textContent = originalLabel;
+      }
+    });
+  });
+</script>

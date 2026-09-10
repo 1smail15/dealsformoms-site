@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import PromoCard from '../components/PromoCard.astro';
+import Newsletter from '../components/Newsletter.astro';
 import { SITE, FACEBOOK } from '../consts';
 import { getPublished } from '../lib/content';
 import allPromos from '../data/promos.json';
@@ -116,5 +117,7 @@ const schema = {
         {guides.map((g: any) => <PostCard post={g} section="guides" />)}
       </ul>
     </section>
+
+    <Newsletter />
   </div>
 </BaseLayout>

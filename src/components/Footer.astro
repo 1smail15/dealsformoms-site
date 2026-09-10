@@ -1,9 +1,11 @@
 ---
 import { FACEBOOK } from '../consts';
+import Newsletter from './Newsletter.astro';
 const year = new Date().getFullYear();
 ---
 <footer class="site-foot">
   <div class="wrap">
+    <Newsletter variant="inline" />
     <span>&copy; {year} Deals For Moms</span>
     <nav class="nav" aria-label="Footer" style="font-size:.86rem">
       <a href="/about">About</a>
