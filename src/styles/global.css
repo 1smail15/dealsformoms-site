@@ -372,10 +372,17 @@ section.block { padding: 44px 0 0; }
 .section-head a { font-family: var(--font-ui); font-size: .88rem; font-weight: 700; }
 
 @media (max-width: 900px) {
-  .collage { grid-template-columns: repeat(3, 1fr); }
-}
-@media (max-width: 720px) {
-  .collage { grid-template-columns: repeat(2, 1fr); }
+  .collage {
+    display: flex; grid-template-columns: none;
+    overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: 24px;
+    gap: 10px; margin: 26px -24px -1px; padding: 0 24px 6px;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .collage::-webkit-scrollbar { display: none; }
+  .collage a {
+    flex: 0 0 auto; width: 44vw; max-width: 200px; aspect-ratio: 4/3;
+    scroll-snap-align: start;
+  }
 }
 @media (max-width: 600px) {
   body { font-size: 17px; }
