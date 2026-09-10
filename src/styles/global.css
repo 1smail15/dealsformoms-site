@@ -56,7 +56,7 @@ th { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color:
 .table-scroll { overflow-x: auto; margin: 1.5em 0; }
 
 /* --- header / footer --- */
-.site-head { border-bottom: 1px solid var(--rule); background: var(--surface); }
+.site-head { border-bottom: 1px solid var(--rule); background: var(--surface); position: relative; }
 .site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 16px; padding-bottom: 16px; flex-wrap: wrap; }
 .brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 900; font-size: 1.25rem; letter-spacing: -.02em; color: var(--ink); text-decoration: none; }
 .brand span { color: var(--accent); }
@@ -92,15 +92,17 @@ th { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color:
 
 @media (max-width: 760px) {
   .nav-toggle { display: flex; order: 2; }
-  .head-controls { flex-wrap: wrap; justify-content: flex-end; }
   #search-open { order: 1; }
   .nav-toggle-input { order: 2; }
   .nav {
-    order: 3; flex-basis: 100%; flex-direction: column; gap: 2px;
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+    flex-direction: column; gap: 2px;
+    background: var(--surface); border-top: 1px solid var(--rule);
+    box-shadow: 0 12px 24px rgba(20,20,26,.1);
     max-height: 0; overflow: hidden;
     transition: max-height .2s ease;
   }
-  .nav a { padding: 12px 4px; border-top: 1px solid var(--rule); }
+  .nav a { padding: 12px 24px; border-top: 1px solid var(--rule); }
   .nav-toggle-input:checked ~ .nav { max-height: 400px; }
 }
 
