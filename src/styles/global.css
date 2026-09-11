@@ -351,6 +351,12 @@ th { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color:
 .hero-photos img:nth-child(2) { top: 68px; left: 34%; transform: rotate(5deg); z-index: 2; width: 200px; height: 200px; }
 .hero-photos img:nth-child(3) { top: 0; left: 63%; transform: rotate(-4deg); z-index: 1; }
 
+@media (max-width: 859px) {
+  .hero-copy { text-align: center; }
+  .hero-copy .lede { margin-left: auto; margin-right: auto; }
+  .hero-copy .social-cta { justify-content: center; }
+}
+
 @media (min-width: 860px) {
   .hero { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
   .hero-photos { display: block; }
