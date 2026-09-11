@@ -208,6 +208,13 @@ th { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color:
 .card h3 a:hover { color: var(--accent); }
 .card h3 a::after { content: ''; position: absolute; inset: 0; z-index: 1; }
 .card p { font-size: .9rem; color: var(--ink-2); margin: 0; }
+.card-cta {
+  font-family: var(--font-ui); font-weight: 800; font-size: .84rem; color: var(--accent);
+  margin-top: auto; padding-top: 6px;
+  display: inline-flex; align-items: center; gap: 4px;
+  transition: transform .15s ease;
+}
+.card:hover .card-cta, .card:active .card-cta { transform: translateX(3px); }
 .meta { font-family: var(--font-ui); font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); font-weight: 700; }
 
 /* --- trust strip / pillar nav --- */

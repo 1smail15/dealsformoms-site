@@ -40,5 +40,6 @@ const firsthandLabel: Record<string, string> = {
     <span class="meta">{fmtDate(data.pubDate)}</span>
     <h3><a href={`/${section}/${post.id}`}>{data.title}</a></h3>
     <p>{data.description}</p>
+    <span class="card-cta">{section === 'deals' ? 'See the full find' : 'Read the guide'} &rarr;</span>
   </div>
 </li>
