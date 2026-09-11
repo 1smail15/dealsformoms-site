@@ -57,25 +57,41 @@ const schema = {
         <img src="/images/deals/carote-pots-pans-purple.png" alt="" loading="eager" />
         <img src="/images/deals/beautiful-bread-oven-white.png" alt="" loading="eager" />
       </div>
-      <nav class="collage" aria-label="Browse by topic">
-        <a href="/deals" class="collage-photo" style={`background-image:url(${deals[0]?.data.heroImage ?? '/images/deals/bhg-towel-bundle.png'})`}>
-          <span>This week's<br />top finds</span>
+      <nav class="topics" aria-label="Browse by topic">
+        <a href="/deals" class="topic-tile">
+          <span class="topic-img" style={`background-image:url(${deals[0]?.data.heroImage ?? '/images/deals/bhg-towel-bundle.png'})`}></span>
+          <span class="topic-label">
+            <span class="topic-icon tone-yellow"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg></span>
+            This week's top finds
+          </span>
         </a>
-        <a href="/shop" class="collage-photo" style="background-image:url(/images/deals/cook-with-color-snack-tray.png)">
-          <span class="icon-badge"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 8V6a6 6 0 0 1 12 0v2M4 8h16l-1.2 12.1a2 2 0 0 1-2 1.9H7.2a2 2 0 0 1-2-1.9L4 8Z"/></svg></span>
-          <span>Shop best<br />online deals</span>
+        <a href="/shop" class="topic-tile">
+          <span class="topic-img" style="background-image:url(/images/deals/cook-with-color-snack-tray.png)"></span>
+          <span class="topic-label">
+            <span class="topic-icon tone-blue"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 8V6a6 6 0 0 1 12 0v2M4 8h16l-1.2 12.1a2 2 0 0 1-2 1.9H7.2a2 2 0 0 1-2-1.9L4 8Z"/></svg></span>
+            Shop best online deals
+          </span>
         </a>
-        <a href="/guides/pillar/calendar" class="collage-photo pos-center" style="background-image:url(/images/deals/mainstays-chelsea-patio-set.png)">
-          <span class="icon-badge"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="8" cy="15" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="15" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="1.2" fill="currentColor" stroke="none"/></svg></span>
-          <span>Markdown<br />calendar</span>
+        <a href="/guides/pillar/calendar" class="topic-tile">
+          <span class="topic-img" style="background-image:url(/images/deals/mainstays-chelsea-patio-set.png); background-position:center 78%;"></span>
+          <span class="topic-label">
+            <span class="topic-icon tone-red"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="8" cy="15" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="15" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="1.2" fill="currentColor" stroke="none"/></svg></span>
+            Markdown calendar
+          </span>
         </a>
-        <a href="/guides/pillar/mechanics" class="collage-photo" style="background-image:url(/images/deals/clearance-tag-137-pajamas.png)">
-          <span class="icon-badge"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.59 13.41 12 22l-9-9 8.59-8.59A2 2 0 0 1 13 4h6a1 1 0 0 1 1 1v6a2 2 0 0 1-.41 1.41Z"/></svg></span>
-          <span>Price code<br />decoder</span>
+        <a href="/guides/pillar/mechanics" class="topic-tile">
+          <span class="topic-img" style="background-image:url(/images/deals/clearance-tag-137-pajamas.png)"></span>
+          <span class="topic-label">
+            <span class="topic-icon tone-ink"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.59 13.41 12 22l-9-9 8.59-8.59A2 2 0 0 1 13 4h6a1 1 0 0 1 1 1v6a2 2 0 0 1-.41 1.41Z"/></svg></span>
+            Price code decoder
+          </span>
         </a>
-        <a href="/guides/pillar/tools" class="collage-photo" style="background-image:url(/images/deals/walmart-app-deals-endcap.png)">
-          <span class="icon-badge"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7V4h3M20 7V4h-3M4 17v3h3M20 17v3h-3"/><path d="M4 12h16"/></svg></span>
-          <span>Scan &amp;<br />save</span>
+        <a href="/guides/pillar/tools" class="topic-tile">
+          <span class="topic-img" style="background-image:url(/images/deals/walmart-app-deals-endcap.png)"></span>
+          <span class="topic-label">
+            <span class="topic-icon tone-ink"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7V4h3M20 7V4h-3M4 17v3h3M20 17v3h-3"/><path d="M4 12h16"/></svg></span>
+            Scan &amp; save
+          </span>
         </a>
       </nav>
     </div>
