@@ -401,11 +401,26 @@ th { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color:
 }
 .topic-tile:hover .topic-img { transform: scale(1.06); }
 
+.topic-img.contain {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--paper); padding: 18px;
+}
+.topic-img.contain img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.topic-tile:hover .topic-img.contain { transform: none; }
+.topic-tile:hover .topic-img.contain img { transform: scale(1.06); transition: transform .3s ease; }
+.topic-img-placeholder {
+  font-family: var(--font-ui); font-weight: 700; font-size: .8rem; color: var(--muted); text-align: center;
+}
+
 .topic-label {
   display: flex; align-items: center; gap: 8px;
-  padding: 10px;
+  padding: 10px 10px 2px;
   font-family: var(--font-ui); font-weight: 800; font-size: .8rem; line-height: 1.25;
   color: var(--ink);
+}
+.topic-meta {
+  padding: 0 10px 10px 42px;
+  font-family: var(--font-ui); font-size: .74rem; color: var(--muted);
 }
 .topic-icon {
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
@@ -416,6 +431,8 @@ th { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color:
 .topic-icon.tone-blue { background: #1877f2; }
 .topic-icon.tone-red { background: var(--accent); }
 .topic-icon.tone-ink { background: var(--ink); }
+
+.topics-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); grid-column: auto; margin: 0; }
 
 @keyframes topic-in {
   from { opacity: 0; transform: translateY(10px); }
@@ -450,14 +467,15 @@ section.block { padding: 44px 0 0; }
 .section-head a { font-family: var(--font-ui); font-size: .88rem; font-weight: 700; }
 
 @media (max-width: 900px) {
-  .topics {
+  .topics:not(.topics-grid) {
     display: flex; grid-template-columns: none;
     overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: 24px;
     gap: 12px; margin: 26px -24px -1px; padding: 0 24px 6px;
     -webkit-overflow-scrolling: touch; scrollbar-width: none;
   }
-  .topics::-webkit-scrollbar { display: none; }
-  .topic-tile { flex: 0 0 auto; width: 38vw; max-width: 160px; scroll-snap-align: start; }
+  .topics:not(.topics-grid)::-webkit-scrollbar { display: none; }
+  .topics:not(.topics-grid) .topic-tile { flex: 0 0 auto; width: 38vw; max-width: 160px; scroll-snap-align: start; }
+  .topics-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
 }
 @media (max-width: 600px) {
   body { font-size: 17px; }
